@@ -1,0 +1,235 @@
+<!--For reference while developing:
+https://www.baeldung.com/thymeleaf-in-spring-mvc
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Converter</title>
+    <!--Add jquery for simplifying javascript-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+            integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+          integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"/>
+    <style>
+        body{
+            margin:0px;
+            padding:0px;
+            font-family: Arial,sans-serif;
+            background: linear-gradient(135deg, #153677, #4e085f);
+        }
+
+        .container {
+            max-width: 600px;
+            margin:5% auto;
+            padding:20px;
+            border: 1px solid black;
+            background-color: #F8F8FF;
+            border-radius:5px;
+            box-shadow: 1px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        h1{
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 0, 255, 0.2);
+        }
+
+        form{
+            margin-bottom: 20px;
+        }
+
+        label{
+            display: block;
+            margin:10px 0px;
+            font-weight:bold;
+        }
+        input[type="number"]{
+            width:99%;
+            padding:4px;
+            border: 1px solid black;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]{
+            width:40%;
+            padding:10px;
+            display:block;
+            margin:20px auto;
+            background-color:#008CBA;
+            color:white;
+            border-radius:4px;
+        }
+        input[type="submit"]:hover{
+            background-color:#00008b;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+        input[type="submit"]:active{
+            transform: translateY(4px);
+        }
+
+        #result{
+            width:99%;
+            font-weight: bold;
+            text-align:center;
+            margin-bottom:10px;
+            padding:2px;
+        }
+
+        #conversionRate{
+            width:99%;
+            font-weight: bold;
+            text-align:center;
+            margin-bottom:10px;
+            padding:2px;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+
+</head>
+<body>
+<script>
+ $(document).ready(function () {
+      $('select').selectize({
+          sortField: 'text'
+      });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+<div class="container">
+    <h1>Currency Converter</h1>
+    <form action="#" method="post">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" required="required" min="0"/>
+
+        <label for="from">From</label>
+        <select id="from" name="fromCurrency" required="required" placeholder="pick a currency">
+            <option value="">Select a currency</option>
+            <option th:each="currency : ${currencies}" th:value="${currency.code}"
+                    th:text="${currency.name + ' (' + currency.code + ')'}">
+            </option>
+        </select>
+
+        <label for="to">To:</label>
+        <select id="to" name="toCurrency" required="required" placeholder="pick a currency">
+            <option value="">Select a currency</option>
+            <option th:each="currency : ${currencies}" th:value="${currency.code}"
+                    th:text="${currency.name + ' ('+ currency.code + ')'}">
+            </option>
+        </select>
+        <input type="submit" value="Convert" id="convertCurrency"/>
+    </form>
+
+    <form action="#" method="get">
+        <label for="result">Result</label>
+        <input id="result" name="result" type="text" readonly="readonly"/>
+        <br>
+        <label for="conversionRate">Rate Used </label>
+        <input id="conversionRate" name="conversionRate" type="text" readonly="readonly"/>
+    </form>
+</div>
+<!--For the post request using jquery-->
+<script>
+    $(document).ready(function() {
+        $("#convertCurrency").click(function (e){
+            e.preventDefault();
+            let amount = ($("#amount").val());
+            let fromCurrency = $("#from").find(":selected").val();
+            let toCurrency = $("#to").find(":selected").val();
+            let valid = true;
+            if((amount == '' || amount<=0)){
+                $("#amount").attr("placeholder", "Enter valid amount");
+                valid = false;
+            }
+            else if(fromCurrency =='' || toCurrency == ''){
+                valid=false;
+            }
+            if(!valid){
+                return;
+            }
+            let data = {
+                amount:amount,
+                fromCurrency:fromCurrency,
+                toCurrency:toCurrency
+            };
+            $.ajax({
+                url:'/exchangeCurrencies',
+                method: "POST",
+                contentType:"application/json",
+                data:JSON.stringify(data),
+                success: function (response){
+                    console.log(response);
+                    $("#result").val(response.result);
+                    $("#conversionRate").val(response.exchangeRate);
+                    $("#result").css("color", "black");
+                },
+                error: function (xhr,status,error){
+
+                    $("#result").val("Please check entered values");
+                    $("#conversionRate").val("");
+                    $("#result").css("color", "red");
+                }
+
+            });
+
+        });
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
