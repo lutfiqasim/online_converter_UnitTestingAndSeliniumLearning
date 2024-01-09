@@ -126,8 +126,4 @@ public class CurrencyController {
         return fromToResponse;
     }
 
-    public void setCurrencyRepository(CurrencyRepository currencyRepository) {
-        this.currencyRepository = currencyRepository;
-    }
-
 }
