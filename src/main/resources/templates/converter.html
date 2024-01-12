@@ -68,6 +68,14 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         input[type="submit"]:active{
             transform: translateY(4px);
         }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
 
         #result{
             width:99%;
@@ -87,54 +95,16 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </style>
 
 </head>
 <body>
 <script>
- $(document).ready(function () {
-      $('select').selectize({
-          sortField: 'text'
-      });
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!-- $(document).ready(function () {-->
+<!--      $('select').selectize({-->
+<!--          sortField: 'text'-->
+<!--      });-->
+<!--  });-->
 
 </script>
 
@@ -217,18 +187,6 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         });
 
     });
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 </body>
