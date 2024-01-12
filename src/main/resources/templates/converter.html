@@ -39,6 +39,14 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         form{
             margin-bottom: 20px;
         }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
 
         label{
             display: block;
@@ -89,51 +97,18 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </style>
 
 </head>
 <body>
 <script>
- $(document).ready(function () {
-      $('select').selectize({
-          sortField: 'text'
-      });
-  });
+<!-- $(document).ready(function () {-->
+<!--      $('select').selectize({-->
+<!--          sortField: 'text'-->
+<!--      });-->
+<!--  });-->
 
-
-
-
-
-
-
-
-
-
-
-
+</script>
 
 
 </script>
@@ -148,7 +123,7 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         <select id="from" name="fromCurrency" required="required" placeholder="pick a currency">
             <option value="">Select a currency</option>
             <option th:each="currency : ${currencies}" th:value="${currency.code}"
-                    th:text="${currency.name + ' (' + currency.code + ')'}">
+                    th:text="${currency.name + ' ('+ currency.code + ')'}">
             </option>
         </select>
 
@@ -217,17 +192,6 @@ https://www.baeldung.com/thymeleaf-in-spring-mvc
         });
 
     });
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>
