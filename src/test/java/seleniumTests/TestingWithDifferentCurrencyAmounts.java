@@ -1,8 +1,10 @@
 package seleniumTests;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
@@ -22,6 +24,25 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class TestingWithDifferentCurrencyAmounts {
     private WebDriver webDriver;
+    private static ExtentReports extent;
+    private static ExtentSparkReporter spark;
+    private static ExtentTest test;
+
+    @BeforeAll
+    static void beforeAll() {
+        extent = new ExtentReports();
+        spark = new ExtentSparkReporter("target/Spark/TestingWithDifferentAmountsOfCurrency.html");
+        spark.config().setTheme(Theme.DARK);
+        spark.config().setDocumentTitle("Testing WithDifferent From Currencies");
+        spark.config().setReportName("Extent report for different currency");
+        extent.attachReporter(spark);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        extent.flush();//to flush data into the report
+    }
+
 
     @BeforeEach
     void setUp() {
@@ -35,7 +56,9 @@ public class TestingWithDifferentCurrencyAmounts {
 
     @Test
     void NoAmountGiven() {
+        test = extent.createTest("Testing with no amount given ");
         webDriver.get("http://localhost:8080/");
+        test.pass("URL is loaded");
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         WebElement amountField = webDriver.findElement(By.cssSelector("#amount"));
         WebElement fromCurrencyElement = webDriver.findElement(By.cssSelector("#from"));
@@ -44,7 +67,7 @@ public class TestingWithDifferentCurrencyAmounts {
         WebElement toCurrencyElement = webDriver.findElement(By.cssSelector("#to"));
         Select toSelect = new Select(toCurrencyElement);
         toSelect.selectByValue("USD");
-
+        test.info("Values are submited to be converted with no amount");
         //convert btn
         WebElement convertBtn = webDriver.findElement(By.cssSelector("#convertCurrency"));
         convertBtn.click();
@@ -52,10 +75,17 @@ public class TestingWithDifferentCurrencyAmounts {
         //getting results
         WebElement resultInput = webDriver.findElement(By.cssSelector("#result"));
         WebElement conversionRateInput = webDriver.findElement(By.cssSelector("#conversionRate"));
-
-        assertEquals("", resultInput.getAttribute("value"));
-        assertEquals("", conversionRateInput.getAttribute("value"));
-        assertEquals("Enter valid amount", amountField.getAttribute("placeholder"));
+        try {
+            assertEquals("", resultInput.getAttribute("value"));
+            test.pass("Did not put random value in result");
+            assertEquals("", conversionRateInput.getAttribute("value"));
+            test.pass("Did not put random value in conversion rate");
+            assertEquals("Enter valid amount", amountField.getAttribute("placeholder"));
+            test.pass("Gave user feedback 'Enter valid amount'");
+        } catch (AssertionError e) {
+            test.fail(e.getMessage());
+            throw e;
+        }
     }
 
     @ParameterizedTest(name = "Testing with amount: {0}")
